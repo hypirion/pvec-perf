@@ -28,9 +28,33 @@ public final class PVec {
         root = null;
     }
 
-    public PVec set(int index, Object e) {
-        rangeCheck(index);
-        return null;
+    private PVec(int size, int shift, Object[] tail, Object[] root) {
+        this.size = size;
+        this.shift = shift;
+        this.tail = tail;
+        this.root = root;
+    }
+
+    public PVec set(int i, Object val) {
+        rangeCheck(i);
+        if (i >= tailOffset()) {
+            Object[] newTail = tail.clone();
+            newTail[i & 31] = val;
+            return new PVec(size, shift, newTail, root);
+        }
+        else {
+            Object[] newRoot = root.clone();
+            Object[] node = newRoot;
+            for (int level = shift; level > 0; level -= 5) {
+                int subidx = (i >>> level) & 31;
+                Object[] child = (Object[]) node[subidx];
+                child = child.clone();
+                node[subidx] = child;
+                node = child;
+            }
+            node[i & 31] = val;
+            return new PVec(size, shift, tail, newRoot);
+        }
     }
 
     public Object get(int i) {
