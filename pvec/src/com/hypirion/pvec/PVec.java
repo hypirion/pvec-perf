@@ -72,6 +72,70 @@ public final class PVec {
         }
     }
 
+    public PVec push(Object val) {
+        int ts = tailSize();
+        if (ts != 32) {
+            Object[] newTail = new Object[ts+1];
+            System.arraycopy(tail, 0, newTail, 0, ts);
+            newTail[ts] = val;
+            return new PVec(size+1, shift, newTail, root);
+        }
+        else { // have to insert tail into root.
+            Object[] newTail = new Object[]{val};
+            // Special case: If old size == 32, then tail is new root
+            if (size == 32) {
+                return new PVec(size+1, 0, newTail, tail);
+            }
+            // check if the root is completely filled. Must also increment
+            // shift if that's the case.
+            Object[] newRoot;
+            int newShift = shift;
+            if ((size >>> 5) > (1 << shift)) {
+                newShift += 5;
+                newRoot = new Object[32];
+                newRoot[0] = root;
+                newRoot[1] = newPath(shift, tail);
+                return new PVec(size+1, newShift, newRoot, newTail);
+            }
+            else { // still space in root
+                newRoot = pushLeaf(shift, size-1, root, tail);
+                return new PVec(size+1, shift, newRoot, newTail);
+            }
+        }
+    }
+
+    private static Object[] pushLeaf(int shift, int i, Object[] root, Object[] tail) {
+        Object[] newRoot = root.clone();
+        Object[] node = newRoot;
+        for (int level = shift; level > 5; level -= 5) {
+            int subidx = (i >>> level) & 31;
+            Object[] child = (Object[]) node[subidx];
+            // You could replace this null check with
+            // ((tailOffset() - 1) ^ tailOffset() >> level) != 0
+            // but we'll still have to assign node[subidx].
+            // The null check should therefore be a bit faster.
+            if (child == null) {
+                node[subidx] = newPath(level - 5, tail);
+                return newRoot;
+            }
+            child = child.clone();
+            node[subidx] = child;
+            node = child;
+        }
+        node[(i >>> 5) & 31] = tail;
+        return newRoot;
+    }
+
+    private static Object[] newPath(int levels, Object[] tail) {
+        Object[] topNode = tail;
+        for (int level = levels; level > 0; level -= 5) {
+            Object[] newTop = new Object[32];
+            newTop[0] = topNode;
+            topNode = newTop;
+        }
+        return topNode;
+    }
+
     public PVec pop() {
         rangeCheck(0);
         return null;
@@ -96,5 +160,12 @@ public final class PVec {
 
     private int tailOffset() {
         return (size - 1) & (~31);
+    }
+
+    private int tailSize() {
+        if (size == 0)
+            return 0;
+        else
+            return ((size-1) & 31)+1;
     }
 }
