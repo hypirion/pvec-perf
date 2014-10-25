@@ -33,9 +33,19 @@ public final class PVec {
         return null;
     }
 
-    public Object get(int index) {
-        rangeCheck(index);
-        return null;
+    public Object get(int i) {
+        rangeCheck(i);
+        Object[] node;
+        if (i >= tailOffset()) {
+            return tail[i & 31];
+        }
+        else {
+            node = root;
+            for (int level = shift; level > 0; level -= 5) {
+                node = (Object[]) node[(i >>> level) & 31];
+            }
+            return node[i & 31];
+        }
     }
 
     public PVec pop() {
@@ -58,5 +68,9 @@ public final class PVec {
     private void rangeCheck(int index) {
         if (index >= size)
             throw new IndexOutOfBoundsException("Index:"+index+", Size:"+size);
+    }
+
+    private int tailOffset() {
+        return (size - 1) & (~31);
     }
 }
