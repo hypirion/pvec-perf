@@ -59,12 +59,11 @@ public final class PVec {
 
     public Object get(int i) {
         rangeCheck(i);
-        Object[] node;
         if (i >= tailOffset()) {
             return tail[i & 31];
         }
         else {
-            node = root;
+            Object[] node = root;
             for (int level = shift; level > 0; level -= 5) {
                 node = (Object[]) node[(i >>> level) & 31];
             }
@@ -138,11 +137,54 @@ public final class PVec {
 
     public PVec pop() {
         rangeCheck(0);
-        return null;
-    }
+        int ts = tailSize();
+        if (ts > 1) {
+            Object[] newTail = new Object[ts-1];
+            System.arraycopy(tail, 0, newTail, 0, ts-1);
+            return new PVec(size-1, shift, newTail, root);
+        }
+        else { // has to find new tail
+            int newTrieSize = size - 33;
+            // special case: if new size is 32, then new root turns is null, old
+            // root the tail
+            if (newTrieSize == 0) {
+                return new PVec(32, 0, root, null);
+            }
+            // check if we can reduce the trie's height
+            int lowerShift = shift - 5;
+            if (newTrieSize == 1 << lowerShift) { // can lower the height
+                Object[] newRoot = (Object[]) root[0];
 
-    public PVec push(Object e) {
-        return null;        
+                // find new tail
+                Object[] node = (Object[]) root[1];
+                for (int level = lowerShift; level > 0; level -= 5) {
+                    node = (Object[]) node[0];
+                }
+                return new PVec(size-1, lowerShift, node, newRoot);
+            } else { // height is same
+                // diverges contain information on when the path diverges.
+                int diverges = newTrieSize ^ (newTrieSize - 1);
+                boolean hasDiverged = false;
+                Object[] newRoot = root.clone();
+                Object[] node = newRoot;
+                for (int level = shift; level > 0; level -= 5) {
+                    int subidx = (newTrieSize >>> level) & 31;
+                    Object[] child = (Object[]) node[subidx];
+                    if (hasDiverged) {
+                        node = child;
+                    } else if ((diverges >>> level) != 0) {
+                        hasDiverged = true;
+                        node[subidx] = null;
+                        node = child;
+                    } else {
+                        child = child.clone();
+                        node[subidx] = child;
+                        node = child;
+                    }
+                }
+                return new PVec(size-1, shift, node, newRoot);
+            }
+        }
     }
 
     public int size() {
