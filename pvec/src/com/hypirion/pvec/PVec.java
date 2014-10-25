@@ -28,15 +28,18 @@ public final class PVec {
         root = null;
     }
 
-    public PVec update(int index, Object e) {
+    public PVec set(int index, Object e) {
+        rangeCheck(index);
         return null;
     }
 
     public Object get(int index) {
+        rangeCheck(index);
         return null;
     }
 
     public PVec pop() {
+        rangeCheck(0);
         return null;
     }
 
@@ -50,5 +53,10 @@ public final class PVec {
 
     public PVec map(Fun f) {
         return null;
+    }
+
+    private void rangeCheck(int index) {
+        if (index >= size)
+            throw new IndexOutOfBoundsException("Index:"+index+", Size:"+size);
     }
 }
