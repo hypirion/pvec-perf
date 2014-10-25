@@ -48,7 +48,7 @@ public final class PVec {
         return size;
     }
 
-    public PVec map(Mapping f) {
+    public PVec map(Fun f) {
         return null;
     }
 }

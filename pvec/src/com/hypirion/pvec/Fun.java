@@ -16,6 +16,6 @@ package com.hypirion.pvec;
 /**
  * An "update" function.
  */
-public interface Mapping {
+public interface Fun {
     Object update(Object x);
 }
