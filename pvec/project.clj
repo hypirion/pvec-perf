@@ -5,4 +5,8 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths []
   :java-source-paths ["src"]
-  :javac-options ["-target" "1.6" "-source" "1.6"])
+  :javac-options ["-target" "1.6" "-source" "1.6"]
+  :aliases {"test" ["run" "-m" "com.hypirion.pvec.tests.Test"]}
+  :jvm-opts []
+  :profiles {:dev {:java-source-paths ["test"]
+                   :dependencies [[org.clojure/clojure "1.6.0"]]}})
