@@ -137,6 +137,9 @@ public final class PVec {
 
     public PVec pop() {
         rangeCheck(0);
+        if (size == 1) {
+            return new PVec();
+        }
         int ts = tailSize();
         if (ts > 1) {
             Object[] newTail = new Object[ts-1];
