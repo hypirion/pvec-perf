@@ -28,7 +28,7 @@ public final class PVec {
         root = null;
     }
 
-    private PVec(int size, int shift, Object[] tail, Object[] root) {
+    private PVec(int size, int shift, Object[] root, Object[] tail) {
         this.size = size;
         this.shift = shift;
         this.tail = tail;
@@ -40,7 +40,7 @@ public final class PVec {
         if (i >= tailOffset()) {
             Object[] newTail = tail.clone();
             newTail[i & 31] = val;
-            return new PVec(size, shift, newTail, root);
+            return new PVec(size, shift, root, newTail);
         }
         else {
             Object[] newRoot = root.clone();
@@ -53,7 +53,7 @@ public final class PVec {
                 node = child;
             }
             node[i & 31] = val;
-            return new PVec(size, shift, tail, newRoot);
+            return new PVec(size, shift, newRoot, tail);
         }
     }
 
@@ -77,13 +77,13 @@ public final class PVec {
             Object[] newTail = new Object[ts+1];
             System.arraycopy(tail, 0, newTail, 0, ts);
             newTail[ts] = val;
-            return new PVec(size+1, shift, newTail, root);
+            return new PVec(size+1, shift, root, newTail);
         }
         else { // have to insert tail into root.
             Object[] newTail = new Object[]{val};
             // Special case: If old size == 32, then tail is new root
             if (size == 32) {
-                return new PVec(size+1, 0, newTail, tail);
+                return new PVec(size+1, 0, tail, newTail);
             }
             // check if the root is completely filled. Must also increment
             // shift if that's the case.
@@ -141,14 +141,14 @@ public final class PVec {
         if (ts > 1) {
             Object[] newTail = new Object[ts-1];
             System.arraycopy(tail, 0, newTail, 0, ts-1);
-            return new PVec(size-1, shift, newTail, root);
+            return new PVec(size-1, shift, root, newTail);
         }
         else { // has to find new tail
             int newTrieSize = size - 33;
             // special case: if new size is 32, then new root turns is null, old
             // root the tail
             if (newTrieSize == 0) {
-                return new PVec(32, 0, root, null);
+                return new PVec(32, 0, null, root);
             }
             // check if we can reduce the trie's height
             int lowerShift = shift - 5;
@@ -160,7 +160,7 @@ public final class PVec {
                 for (int level = lowerShift; level > 0; level -= 5) {
                     node = (Object[]) node[0];
                 }
-                return new PVec(size-1, lowerShift, node, newRoot);
+                return new PVec(size-1, lowerShift, newRoot, node);
             } else { // height is same
                 // diverges contain information on when the path diverges.
                 int diverges = newTrieSize ^ (newTrieSize - 1);
@@ -182,7 +182,7 @@ public final class PVec {
                         node = child;
                     }
                 }
-                return new PVec(size-1, shift, node, newRoot);
+                return new PVec(size-1, shift, newRoot, node);
             }
         }
     }
