@@ -151,8 +151,8 @@ public final class PVec {
                 return new PVec(32, 0, null, root);
             }
             // check if we can reduce the trie's height
-            int lowerShift = shift - 5;
-            if (newTrieSize == 1 << lowerShift) { // can lower the height
+            if (newTrieSize == 1 << shift) { // can lower the height
+                int lowerShift = shift - 5;
                 Object[] newRoot = (Object[]) root[0];
 
                 // find new tail
