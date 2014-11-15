@@ -9,6 +9,9 @@ o = 40 # overhead per node - 40 bytes is the amount for Clojure's implementation
 p = 4  # Size of a pointer (4 with compressedOops on the JVM)
 M = 64 # bytes in a single cache line (usually 64)
 
+## Number of cache lines a node occupies at minimum.
+nodeLines = int(ceil((o+p*(b+2))/float(M)))
+
 ## This function calculates size of the tail. Useful to avoid peeking into the
 ## tail array itself, which may incur another lookup.
 def tailSize(n):
@@ -23,7 +26,7 @@ def tailOffset(n):
     return (n-1) & (~(b-1))
 
 ## Don't use this one for general-purpose shift calculations. Only verified to
-## work properly for n % 32 == 0, and n >= 32. Prefer to store the shift in the
+## work properly for n % b == 0, and n >= b. Prefer to store the shift in the
 ## vector head if you're going to implement one.
 def shift(n):
     return int(ceil(log(n,b))-1)*bbits
@@ -48,12 +51,20 @@ def cacheReadsForAppend(n):
     level = shift(n)
     count = 1
     while level > 0:
-        count += int(ceil((o+p*(b+2))/float(M)))
+        count += nodeLines
         if diverges >> level != 0:
             return count
         level -= bbits
 
-## TODO: Memory allocations for append
+## Cache lines required for memory allocations for append. JVMs has to zero
+## memory, so I assume this is done in this step as well: This means the nodes
+## actually have to be stored in this step.
+def mallocsForAppend(n):
+    tailLines = int(ceil((o+p*tailSize(n+1))/float(M)))
+    if n % b != 0 or n == b:
+        return 1 + tailLines
+    else:
+        return 1 + nodeLines * int(ceil(log(n,b))-1) + tailLines
 
 ## also: lookups, pops, updates... long list of algos. Lookups and updates are
 ## rather straightforward, whereas pops should be close to the inverse of a
