@@ -40,7 +40,7 @@ def shift(n):
 ## cannot share cache line: Practically, two nodes that are 2.4 cache lines long
 ## may reside in only 5 cache lines. This algorithm assumes they are stored in
 ## 6. Finally, it also assumes that the Node class pointing to the object[]
-## array is stored directly in front of the array itself – which is a bit of a
+## array is stored directly in front of the array itself - which is a bit of a
 ## stretch.
 def cacheReadsForAppend(n):
     if n % b != 0:
@@ -66,6 +66,52 @@ def mallocsForAppend(n):
     else:
         return 1 + nodeLines * int(ceil(log(n,b))-1) + tailLines
 
-## also: lookups, pops, updates... long list of algos. Lookups and updates are
-## rather straightforward, whereas pops should be close to the inverse of a
-## push.
+## In the trie itself. Assumes the object[] needs to do a range check, i.e. the
+## first line of a node always has to be looked up. Also assumes worst case:
+## That pointer is not in the same cache line as length of node (32) is.
+def cacheLinesForLookup(n):
+    if n <= b:
+        return 3
+    else:
+        return 1 + int(ceil(log(n-b,b)))*2
+
+## Self evident: One for the vector head, one for the tail length check, and one
+## for the actual lookup.
+def cacheLinesForTailLookup(n):
+    return 3
+
+## not in tail. Same amount of cache lines for mallocs.
+def cacheLinesForUpdate(n):
+    if n <= b:
+        return 1 + int(ceil((o+p*tailSize(n+1))/float(M)))
+    else:
+        return 1 + int(ceil(log(n-b,b)))*nodeLines
+
+def cacheLinesForTailupdate(n):
+    return cacheLinesForUpdate(((n-1) % b)+1)
+
+## TODO: Lacks popping.
+## pops should be close to the inverse of a push.
+
+## Some example code for pyplotting
+import matplotlib.pyplot as plt
+import numpy as np
+
+plt.rc('font', family='Tex Gyre Pagella', weight='light', size=2*12.0)
+
+lup = np.vectorize(cacheLinesForLookup)
+upd = np.vectorize(cacheLinesForUpdate)
+
+xs = np.arange(1, 2000, 1)
+# xs = np.delete(xs, np.arange(-1, xs.size, 32)) ## for all but tail insertions
+## ^ has some deprecation warnings -- but it works "fine".
+fig = plt.figure(1, (2*6.4, 2*4.8))
+plt.plot(xs, upd(xs), 'b--', label='Updates')
+plt.plot(xs, lup(xs), 'r', label='Lookups')
+plt.xlabel('Length of vector')
+plt.ylabel('Cache lines required')
+plt.title('Cache lines for lookups/updates in trie')
+plt.axis([0,2000, 0, 12])
+plt.legend(loc='lower right')
+fig.savefig('lookup-and-update-plot.png', dpi=50, transparent=True)
+#plt.show()
