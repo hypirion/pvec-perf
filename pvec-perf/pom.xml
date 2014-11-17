@@ -30,6 +30,11 @@
             <artifactId>pvec</artifactId>
             <version>0.1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+	        <groupId>org.clojure</groupId>
+	        <artifactId>clojure</artifactId>
+	        <version>1.6.0</version>
+        </dependency>
     </dependencies>
 
     <properties>
