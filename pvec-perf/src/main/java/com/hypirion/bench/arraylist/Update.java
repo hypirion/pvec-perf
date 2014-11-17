@@ -7,6 +7,7 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Level;
 
 @State(Scope.Benchmark)
 public class Update {
@@ -19,7 +20,7 @@ public class Update {
 
     ArrayList al;
 
-    @Setup
+    @Setup(Level.Trial)
     public void setup() {
         size = 1 << (5*bits);
         r = new Random(1);
