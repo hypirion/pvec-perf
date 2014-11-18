@@ -1,7 +1,7 @@
-package com.hypirion.bench.pvec;
+package com.hypirion.bench.pvecunsafe;
 
 import java.util.Random;
-import com.hypirion.pvec.PVec;
+import com.hypirion.pvec.PVecUnsafe;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
@@ -17,19 +17,19 @@ public class Append {
     public int bits;
     int size;
 
-    PVec p;
+    PVecUnsafe p;
 
     @Setup(Level.Trial)
     public void setup() {
         size = (1 << (5*bits)) + 64;
-        p = new PVec();
+        p = new PVecUnsafe();
         for (int i = 0; i < size; i++) {
             p = p.push(new Object());
         }
     }
 
     @Benchmark
-    public PVec benchAppend() {
+    public PVecUnsafe bencAppend() {
         return p.push(new Object());
     }
 }

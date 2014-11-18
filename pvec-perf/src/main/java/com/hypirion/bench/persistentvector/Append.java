@@ -1,6 +1,7 @@
 package com.hypirion.bench.persistentvector;
 
 import java.util.Random;
+import clojure.lang.PersistentVector;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
@@ -8,8 +9,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Level;
-
-import clojure.lang.PersistentVector;
 
 @State(Scope.Benchmark)
 public class Append {
@@ -30,7 +29,7 @@ public class Append {
     }
 
     @Benchmark
-    public PersistentVector bencAppend() {
+    public PersistentVector benchAppend() {
         return p.cons(new Object());
     }
 }

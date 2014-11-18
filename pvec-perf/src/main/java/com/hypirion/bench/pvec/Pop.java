@@ -11,7 +11,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Level;
 
 @State(Scope.Benchmark)
-public class Append {
+public class Pop {
 
     @Param({"1", "2", "3", "4", "5"})
     public int bits;
@@ -21,7 +21,7 @@ public class Append {
 
     @Setup(Level.Trial)
     public void setup() {
-        size = (1 << (5*bits)) + 64;
+        size = (1 << (5*bits)) + 65;
         p = new PVec();
         for (int i = 0; i < size; i++) {
             p = p.push(new Object());
@@ -29,7 +29,7 @@ public class Append {
     }
 
     @Benchmark
-    public PVec benchAppend() {
-        return p.push(new Object());
+    public PVec benchPop() {
+        return p.pop();
     }
 }
