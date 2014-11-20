@@ -31,7 +31,7 @@ public class Update {
     }
 
     @Benchmark
-    public Object benchGet() {
+    public Object benchUpdate() {
         return p.assocN(r.nextInt(size - 32), new Object());
     }
 }

@@ -29,7 +29,7 @@ public class Pop {
     }
 
     @Benchmark
-    public PersistentVector benchAppend() {
+    public PersistentVector benchPop() {
         return p.pop();
     }
 }

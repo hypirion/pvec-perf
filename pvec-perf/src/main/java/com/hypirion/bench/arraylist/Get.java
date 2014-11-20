@@ -29,10 +29,9 @@ public class Get {
             al.add(new Object());
         }
     }
-    /*
+
     @Benchmark
-    public void benchUpdate() {
+    public void benchGet() {
         al.set(r.nextInt(size), new Object());
     }
-    */
 }
