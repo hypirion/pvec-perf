@@ -24,7 +24,7 @@ public class Full {
     }
 
     @Benchmark
-    public long benchPops() {
+    public long benchFull() {
         TVec t = new TVec();
         for (int i = 0; i < size; i++) {
             t = t.push(i);
