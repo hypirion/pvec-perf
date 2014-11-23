@@ -23,6 +23,7 @@ public class Get {
 
     @Setup(Level.Trial)
     public void setup() {
+        r = new Random(1);
         size = (1 << (5*bits)) + 32;
         p = new PVecUnsafe();
         for (int i = 0; i < size; i++) {
