@@ -188,7 +188,7 @@ public final class TVecUnsafe {
         }
         int ts = tailSize();
         if (ts > 1) {
-            arrSet(tail, ts, null);
+            arrSet(tail, ts-1, null);
             size--;
             return this;
         }

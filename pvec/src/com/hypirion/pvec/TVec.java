@@ -168,7 +168,7 @@ public final class TVec {
         }
         int ts = tailSize();
         if (ts > 1) {
-            tail[ts] = null;
+            tail[ts-1] = null;
             size--;
             return this;
         }
