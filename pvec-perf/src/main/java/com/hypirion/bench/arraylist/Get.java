@@ -31,7 +31,7 @@ public class Get {
     }
 
     @Benchmark
-    public void benchGet() {
-        al.set(r.nextInt(size), new Object());
+    public Object benchGet() {
+        return al.get(r.nextInt(size));
     }
 }
