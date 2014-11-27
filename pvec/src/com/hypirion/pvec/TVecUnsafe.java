@@ -48,7 +48,7 @@ public final class TVecUnsafe {
     private int shift;
     private Object[] tail;
     private Object[] root;
-    private Object id;
+    private volatile Object id;
 
     public TVecUnsafe() {
         id = new Object();

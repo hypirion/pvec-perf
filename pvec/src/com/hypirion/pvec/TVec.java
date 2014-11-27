@@ -28,7 +28,7 @@ public final class TVec {
     private int shift;
     private Object[] tail;
     private Object[] root;
-    private Object id;
+    private volatile Object id;
 
     public TVec() {
         id = new Object();
