@@ -180,15 +180,17 @@ public final class TVecUnsafe {
     }
 
     public TVecUnsafe pop() {
-        rangeCheck(0);
+        if (size == 0) {
+            throw new IllegalStateException("Vector is already empty");
+        }
         if (size == 1) {
             size = 0;
-            arrSet(tail, 0, null);
+            tail[0] = null;
             return this;
         }
-        int ts = tailSize();
-        if (ts > 1) {
-            arrSet(tail, ts-1, null);
+        int ts_1 = (size-1) & 31;
+        if (ts_1 > 0) {
+            arrSet(tail, ts_1, null);
             size--;
             return this;
         }

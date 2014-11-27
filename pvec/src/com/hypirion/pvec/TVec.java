@@ -160,15 +160,17 @@ public final class TVec {
     }
 
     public TVec pop() {
-        rangeCheck(0);
+        if (size == 0) {
+            throw new IllegalStateException("Vector is already empty");
+        }
         if (size == 1) {
             size = 0;
             tail[0] = null;
             return this;
         }
-        int ts = tailSize();
-        if (ts > 1) {
-            tail[ts-1] = null;
+        int ts_1 = (size-1) & 31;
+        if (ts_1 > 0) {
+            tail[ts_1] = null;
             size--;
             return this;
         }

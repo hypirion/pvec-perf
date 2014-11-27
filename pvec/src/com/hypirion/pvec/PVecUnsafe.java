@@ -103,7 +103,7 @@ public final class PVecUnsafe {
         int ts = tailSize();
         if (ts != 32) {
             Object[] newTail = new Object[ts == 31 ? 33 : ts+1];
-            System.arraycopy(tail, 0, newTail, 0, ts);
+            System.arraycopy(tail, 0, newTail, 0, tail.length);
             arrSet(newTail, ts, val);
             return new PVecUnsafe(size+1, shift, root, newTail);
         }
@@ -164,58 +164,65 @@ public final class PVecUnsafe {
     }
 
     public PVecUnsafe pop() {
-        rangeCheck(0);
+        if (size == 0) {
+            throw new IllegalStateException("Vector is already empty");
+        }
         if (size == 1) {
             return new PVecUnsafe();
         }
-        int ts = tailSize();
-        if (ts > 1) {
-            Object[] newTail = new Object[ts-1];
-            System.arraycopy(tail, 0, newTail, 0, ts-1);
+        if (((size-1) & 31) > 0) {
+            Object[] newTail = new Object[tail.length - 1];
+            System.arraycopy(tail, 0, newTail, 0, newTail.length);
             return new PVecUnsafe(size-1, shift, root, newTail);
         }
-        else { // has to find new tail
-            int newTrieSize = size - 33;
-            // special case: if new size is 32, then new root turns is null, old
-            // root the tail
-            if (newTrieSize == 0) {
-                return new PVecUnsafe(32, 0, null, root);
-            }
-            // check if we can reduce the trie's height
-            if (newTrieSize == 1 << shift) { // can lower the height
-                int lowerShift = shift - 5;
-                Object[] newRoot = (Object[]) arrGet(root, 0);
+        final int newTrieSize = size - 33;
+        // special case: if new size is 32, then new root turns is null, old
+        // root the tail
+        if (newTrieSize == 0) {
+            return new PVecUnsafe(32, 0, null, root);
+        }
+        // check if we can reduce the trie's height
+        if (newTrieSize == 1 << shift) { // can lower the height
+            return lowerTrie();
+        }
+        return popTrie();
+    }
 
-                // find new tail
-                Object[] node = (Object[]) arrGet(root, 1);
-                for (int level = lowerShift; level > 0; level -= 5) {
-                    node = (Object[]) arrGet(root, 0);
-                }
-                return new PVecUnsafe(size-1, lowerShift, newRoot, node);
-            } else { // height is same
-                // diverges contain information on when the path diverges.
-                int diverges = newTrieSize ^ (newTrieSize - 1);
-                boolean hasDiverged = false;
-                Object[] newRoot = root.clone();
-                Object[] node = newRoot;
-                for (int level = shift; level > 0; level -= 5) {
-                    int subidx = (newTrieSize >>> level) & 31;
-                    Object[] child = (Object[]) arrGet(node, subidx);
-                    if (hasDiverged) {
-                        node = child;
-                    } else if ((diverges >>> level) != 0) {
-                        hasDiverged = true;
-                        arrSet(node, subidx, null);
-                        node = child;
-                    } else {
-                        child = child.clone();
-                        arrSet(node, subidx, child);
-                        node = child;
-                    }
-                }
-                return new PVecUnsafe(size-1, shift, newRoot, node);
+    private PVecUnsafe lowerTrie() {
+        int lowerShift = shift - 5;
+        Object[] newRoot = (Object[]) arrGet(root, 0);
+
+        // find new tail
+        Object[] node = (Object[]) arrGet(root, 1);
+        for (int level = lowerShift; level > 0; level -= 5) {
+            node = (Object[]) arrGet(root, 0);
+        }
+        return new PVecUnsafe(size-1, lowerShift, newRoot, node);
+    }
+
+    private PVecUnsafe popTrie() {
+        final int newTrieSize = size - 33;
+        // diverges contain information on when the path diverges.
+        int diverges = newTrieSize ^ (newTrieSize - 1);
+        boolean hasDiverged = false;
+        Object[] newRoot = root.clone();
+        Object[] node = newRoot;
+        for (int level = shift; level > 0; level -= 5) {
+            int subidx = (newTrieSize >>> level) & 31;
+            Object[] child = (Object[]) arrGet(node, subidx);
+            if (hasDiverged) {
+                node = child;
+            } else if ((diverges >>> level) != 0) {
+                hasDiverged = true;
+                arrSet(node, subidx, null);
+                node = child;
+            } else {
+                child = child.clone();
+                arrSet(node, subidx, child);
+                node = child;
             }
         }
+        return new PVecUnsafe(size-1, shift, newRoot, node);
     }
 
     public int size() {
