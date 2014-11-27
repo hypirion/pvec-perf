@@ -26,12 +26,12 @@ public class Get {
         size = (1 << (5*bits)) + 32;
         p = PersistentVector.EMPTY;
         for (int i = 0; i < size; i++) {
-            p = p.cons(new Object());
+            p = p.cons(i);
         }
     }
 
     @Benchmark
-    public Object benchGet() {
-        return p.nth(r.nextInt(size - 32));
+    public int benchGet() {
+        return ((Integer) p.nth(r.nextInt(size - 32))) + 1;
     }
 }

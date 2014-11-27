@@ -26,12 +26,12 @@ public class Get {
         r = new Random(1);
         al = new ArrayList();
         for (int i = 0; i < size; i++) {
-            al.add(new Object());
+            al.add(i);
         }
     }
 
     @Benchmark
-    public Object benchGet() {
-        return al.get(r.nextInt(size));
+    public int benchGet() {
+        return ((Integer) al.get(r.nextInt(size))) + 1;
     }
 }

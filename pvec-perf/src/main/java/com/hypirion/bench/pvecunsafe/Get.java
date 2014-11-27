@@ -27,12 +27,12 @@ public class Get {
         size = (1 << (5*bits)) + 32;
         p = new PVecUnsafe();
         for (int i = 0; i < size; i++) {
-            p = p.push(new Object());
+            p = p.push(i);
         }
     }
 
     @Benchmark
-    public Object benchGet() {
-        return p.get(r.nextInt(size) - 32);
+    public int benchGet() {
+        return ((Integer)p.get(r.nextInt(size) - 32)) + 1;
     }
 }
