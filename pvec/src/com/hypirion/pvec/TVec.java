@@ -165,12 +165,9 @@ public final class TVec {
         }
         if (size == 1) {
             size = 0;
-            tail[0] = null;
             return this;
         }
-        int ts_1 = (size-1) & 31;
-        if (ts_1 > 0) {
-            tail[ts_1] = null;
+        if (((size-1) & 31) > 0) {
             size--;
             return this;
         }
