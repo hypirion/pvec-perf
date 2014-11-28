@@ -30,6 +30,6 @@ public class Append {
 
     @Benchmark
     public PersistentVector benchAppend() {
-        return p.cons(new Object());
+        return p.cons(null);
     }
 }

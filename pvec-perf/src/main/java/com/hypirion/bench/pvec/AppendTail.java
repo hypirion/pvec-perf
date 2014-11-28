@@ -30,6 +30,6 @@ public class AppendTail {
 
     @Benchmark
     public PVec benchAppendTail() {
-        return p.push(new Object());
+        return p.push(null);
     }
 }

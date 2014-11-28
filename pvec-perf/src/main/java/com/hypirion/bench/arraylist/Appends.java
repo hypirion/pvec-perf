@@ -27,7 +27,7 @@ public class Appends {
     public ArrayList benchAppends() {
         ArrayList al = new ArrayList();
         for (int i = 0; i < size; i++) {
-            al.add(new Object());
+            al.add(null);
         }
         return al;
     }

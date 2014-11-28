@@ -26,7 +26,7 @@ public class Appends {
     public PersistentVector benchAppends() {
         PersistentVector p = PersistentVector.EMPTY;
         for (int i = 0; i < size; i++) {
-            p = p.cons(new Object());
+            p = p.cons(null);
         }
         return p;
     }

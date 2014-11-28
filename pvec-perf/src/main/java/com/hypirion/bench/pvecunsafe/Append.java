@@ -30,6 +30,6 @@ public class Append {
 
     @Benchmark
     public PVecUnsafe benchAppend() {
-        return p.push(new Object());
+        return p.push(null);
     }
 }

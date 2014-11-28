@@ -30,6 +30,6 @@ public class Append {
 
     @Benchmark
     public PVec benchAppend() {
-        return p.push(new Object());
+        return p.push(null);
     }
 }

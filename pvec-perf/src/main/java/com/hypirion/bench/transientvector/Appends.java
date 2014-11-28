@@ -27,7 +27,7 @@ public class Appends {
     public ITransientVector benchAppends() {
         ITransientVector p = PersistentVector.EMPTY.asTransient();
         for (int i = 0; i < size; i++) {
-            p = (ITransientVector) p.conj(new Object());
+            p = (ITransientVector) p.conj(null);
         }
         return p;
     }

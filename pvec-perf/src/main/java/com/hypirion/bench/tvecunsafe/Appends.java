@@ -26,7 +26,7 @@ public class Appends {
     public TVecUnsafe benchAppends() {
         TVecUnsafe t = new TVecUnsafe();
         for (int i = 0; i < size; i++) {
-            t = t.push(new Object());
+            t = t.push(null);
         }
         return t;
     }

@@ -30,6 +30,6 @@ public class AppendTail {
 
     @Benchmark
     public PersistentVector benchAppendTail() {
-        return p.cons(new Object());
+        return p.cons(null);
     }
 }

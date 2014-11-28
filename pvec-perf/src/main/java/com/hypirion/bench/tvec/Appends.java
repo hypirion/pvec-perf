@@ -26,7 +26,7 @@ public class Appends {
     public TVec benchAppends() {
         TVec t = new TVec();
         for (int i = 0; i < size; i++) {
-            t = t.push(new Object());
+            t = t.push(null);
         }
         return t;
     }

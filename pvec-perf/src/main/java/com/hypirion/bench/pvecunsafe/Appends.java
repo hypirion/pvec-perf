@@ -26,7 +26,7 @@ public class Appends {
     public PVecUnsafe benchAppends() {
         PVecUnsafe p = new PVecUnsafe();
         for (int i = 0; i < size; i++) {
-            p = p.push(new Object());
+            p = p.push(null);
         }
         return p;
     }
