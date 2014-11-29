@@ -25,9 +25,10 @@ public class Full {
 
     @Benchmark
     public long benchFull() {
+        Integer ig = 4;
         ArrayList al = new ArrayList();
         for (int i = 0; i < size; i++) {
-            al.add(i);
+            al.add(ig);
         }
         long sum = 0;
         for (int i = 0; i < size; i++) {

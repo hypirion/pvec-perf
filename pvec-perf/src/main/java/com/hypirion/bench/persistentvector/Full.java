@@ -25,9 +25,10 @@ public class Full {
 
     @Benchmark
     public long benchFull() {
+        Integer ig = 4;
         PersistentVector p = PersistentVector.EMPTY;
         for (int i = 0; i < size; i++) {
-            p = p.cons(i);
+            p = p.cons(ig);
         }
         long sum = 0;
         for (int i = 0; i < size; i++) {

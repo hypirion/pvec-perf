@@ -25,9 +25,10 @@ public class Full {
 
     @Benchmark
     public long benchFull() {
+        Integer ig = 4;
         TVec t = new TVec();
         for (int i = 0; i < size; i++) {
-            t = t.push(i);
+            t = t.push(ig);
         }
         long sum = 0;
         for (int i = 0; i < size; i++) {

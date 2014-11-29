@@ -26,9 +26,10 @@ public class Full {
 
     @Benchmark
     public long benchFull() {
+        Integer ig = 4;
         ITransientVector p = PersistentVector.EMPTY.asTransient();
         for (int i = 0; i < size; i++) {
-            p = (ITransientVector) p.conj(i);
+            p = (ITransientVector) p.conj(ig);
         }
         long sum = 0;
         for (int i = 0; i < size; i++) {
