@@ -23,7 +23,9 @@ package com.hypirion.pvec;
    - Instead of returning a new vector like PVec, it always returns itself.
 */
 
-public final class TVec {
+import java.util.Iterator;
+
+public final class TVec implements Iterable {
     private int size;
     private int shift;
     private Object[] tail;
@@ -283,5 +285,11 @@ public final class TVec {
             editable[32] = id;
             return editable;
         }
+    }
+
+    // Use iteration with CARE: The iterator is fully usable even if the
+    // transient is updated.
+    public Iterator iterator() {
+        return new VecIter(size, shift, root, tail);
     }
 }

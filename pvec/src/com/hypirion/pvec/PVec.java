@@ -13,7 +13,9 @@
 
 package com.hypirion.pvec;
 
-public final class PVec {
+import java.util.Iterator;
+
+public final class PVec implements Iterable {
     private final int size;
     private final int shift;
     private final Object[] tail;
@@ -225,5 +227,9 @@ public final class PVec {
 
     public TVec asTransient() {
         return new TVec(size, shift, root, tail);
+    }
+
+    public Iterator iterator() {
+        return new VecIter(size, shift, root, tail);
     }
 }
