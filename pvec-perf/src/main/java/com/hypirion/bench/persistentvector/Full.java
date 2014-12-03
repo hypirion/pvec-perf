@@ -1,5 +1,6 @@
 package com.hypirion.bench.persistentvector;
 
+import java.util.Iterator;
 import java.util.Random;
 import clojure.lang.PersistentVector;
 
@@ -31,8 +32,8 @@ public class Full {
             p = p.cons(ig);
         }
         long sum = 0;
-        for (int i = 0; i < size; i++) {
-            sum += (Integer) p.nth(i);
+        for (Object o : p) {
+            sum += (Integer) o;
         }
         for (int i = 0; i < size; i++) {
             p = p.pop();

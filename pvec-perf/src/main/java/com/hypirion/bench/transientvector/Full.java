@@ -1,5 +1,6 @@
 package com.hypirion.bench.transientvector;
 
+import java.util.Iterator;
 import java.util.Random;
 import clojure.lang.PersistentVector;
 import clojure.lang.ITransientVector;
@@ -32,6 +33,8 @@ public class Full {
             p = (ITransientVector) p.conj(ig);
         }
         long sum = 0;
+        // transient has no iterator :( (probably for good reason though, hard
+        // to capture their end in clj)
         for (int i = 0; i < size; i++) {
             sum += (Integer) p.nth(i);
         }

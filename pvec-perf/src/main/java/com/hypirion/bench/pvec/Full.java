@@ -1,5 +1,6 @@
 package com.hypirion.bench.pvec;
 
+import java.util.Iterator;
 import java.util.Random;
 import com.hypirion.pvec.PVec;
 
@@ -31,8 +32,8 @@ public class Full {
             p = p.push(ig);
         }
         long sum = 0;
-        for (int i = 0; i < size; i++) {
-            sum += (Integer) p.get(i);
+        for (Object o : p) {
+            sum += (Integer) o;
         }
         for (int i = 0; i < size; i++) {
             p = p.pop();

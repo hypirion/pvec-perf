@@ -1,5 +1,6 @@
 package com.hypirion.bench.arraylist;
 
+import java.util.Iterator;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -32,7 +33,7 @@ public class Full {
         }
         long sum = 0;
         for (int i = 0; i < size; i++) {
-            sum += (Integer) al.get(i);
+            sum += (Integer) al.get(i); // faster than iterator for arraylist
         }
         for (int i = 0; i < size; i++) {
             al.remove(al.size()-1);
